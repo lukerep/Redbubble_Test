@@ -29,8 +29,8 @@ const calculateCartPrice = (cart, basePrices) => {
 
 /**
  * Finds the price of an item and its variant from the basePrices object
- * @param {*} item  - The item object which this lookup is concerning
- * @param {*} basePrices - The base price which contains the price for each item and its variants
+ * @param {Object} item  - The item object which this lookup is concerning
+ * @param {Object} basePrices - The base price which contains the price for each item and its variants
  * @returns {Number} Returns the price for an item found in the basePrices object
  */
 const priceLookup = (item, basePrices) => {
