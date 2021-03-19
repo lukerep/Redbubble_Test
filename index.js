@@ -1,7 +1,11 @@
+/**
+ * @file Entrypoint for the Redbubble price calculator test
+ */
+
 const priceHandler = require('./priceHandler/priceHandler');
 const args = process.argv.slice(2);
 
-// If there are not enough args provided, display an error
+// Check how many args are provided, if insufficient display an error
 if (args.length < 2) {
     console.error("\
         \nUnrecognized or incomplete command line.\n\
@@ -19,4 +23,5 @@ const basePrices = require(args[1]);
 // Send the cart and base price files into the price handler to calculate the cart price
 const cartPrice = priceHandler.calculateCartPrice(cart, basePrices);
 
+// Log/display the cartPrice
 console.log(cartPrice);
