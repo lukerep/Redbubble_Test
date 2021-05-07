@@ -8,8 +8,9 @@
  * @param {Number} itemPrice - The price of the item
  * @returns {Number} Returns the adjusted price for the cart item
  */
-const calculateAdjustedItemPrice = (item, itemPrice) => {
-    return (itemPrice + Math.round(itemPrice * (item['artist-markup']/100))) * item.quantity;
+const calculateAdjustedItemPrice = (item, itemPrice, discount) => {
+    const itemTotal = itemPrice + Math.round(itemPrice * (item['artist-markup']/100)); // Individual adjusted item price
+    return Math.round(itemTotal * (100.0 - discount) / 100) * item.quantity;
 }
 
 /**
@@ -18,13 +19,31 @@ const calculateAdjustedItemPrice = (item, itemPrice) => {
  * @param {Object} basePrices - The base price object that is used to find the appropriate price for each item in the cart
  * @returns {Number} Returns the total price of the cart
  */
-const calculateCartPrice = (cart, basePrices) => {
+const calculateCartPrice = (cart, basePrices, discounts) => {
     let cartPrice = 0;
     cart.forEach((item) => {
         const itemPrice = priceLookup(item, basePrices);
-        cartPrice += calculateAdjustedItemPrice(item, itemPrice);
+        const discountPercentage = discountLookup(item, discounts);
+        cartPrice += calculateAdjustedItemPrice(item, itemPrice, discountPercentage);
     });
     return cartPrice;
+}
+
+const discountLookup = (item, discountsFile) => {
+    let maxDiscount = 0;
+    for (let discount of discountsFile) {
+        if (discount["product-type"] === item["product-type"]) {
+            for (let discountLevel of discount["discounts"]) {
+                if (item.quantity >= discountLevel.threshold) {
+                    maxDiscount = discountLevel.percent;
+                }
+                else {
+                    break;
+                }
+            }
+        }
+    }
+    return maxDiscount;
 }
 
 /**
